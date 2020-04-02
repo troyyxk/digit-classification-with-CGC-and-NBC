@@ -16,26 +16,67 @@ def compute_mean_mles(train_data, train_labels):
     Should return a numpy array of size (10,64)
     The ith row will correspond to the mean estimate for digit class i
     '''
-    means = np.zeros((10, 64))
-    # Compute means
-    return means
+    means = []
+    for i in range(10):
+        i_digits = data.get_digits_by_label(train_data, train_labels, i)
+        # print(i_digits.shape)
+        i_digits_mean = np.mean(i_digits, axis=0)
+        means.append(i_digits_mean)
+
+    return np.array(means)
 
 def compute_sigma_mles(train_data, train_labels):
-    '''
-    Compute the covariance estimate for each digit class
+    all = []
+    for i in range(10):
+        i_digits = data.get_digits_by_label(train_data, train_labels, i)
+        all.append(np.cov(i_digits.T))
 
-    Should return a three dimensional numpy array of shape (10, 64, 64)
-    consisting of a covariance matrix for each digit class 
-    '''
-    covariances = np.zeros((10, 64, 64))
-    # Compute covariances
-    return covariances
+    return np.array(all)
+
+
+# def compute_sigma_mles(train_data, train_labels):
+#     '''
+#     Compute the covariance estimate for each digit class
+
+#     Should return a three dimensional numpy array of shape (10, 64, 64)
+#     consisting of a covariance matrix for each digit class 
+#     '''
+
+
+#     covariances = []
+    
+#     means = compute_mean_mles(train_data, train_labels)
+    
+#     for i in range(10):
+#         i_digits = data.get_digits_by_label(train_data, train_labels, i)
+#         i_mean = means[i]
+#         diff_matrices = []
+#         for j in range(int(i_digits.shape[0])):
+#             diff = i_digits[i] - i_mean
+#             m_diff = diff[np.newaxis]
+#             diff_matrices.append(m_diff.T.dot(m_diff))
+#         covariances.append(np.mean(np.array(diff_matrices), axis=0))
+
+#     stabilizer = 0.01*np.identity(64)
+
+#     for i in range(10):
+#         covariances[i] = covariances[i]+stabilizer
+
+#     covariances = np.array(covariances)
+
+#     # Compute covariances
+#     return covariances
 
 def plot_cov_diagonal(covariances):
     # Plot the log-diagonal of each covariance matrix side by side
+    all_num = []
     for i in range(10):
         cov_diag = np.diag(covariances[i])
-        # ...
+        all_num.append(np.log(cov_diag).reshape(8,8))
+
+    all_concat = np.concatenate(all_num, 1)
+    plt.imshow(all_concat, cmap='gray')
+    plt.show()
 
 def generative_likelihood(digits, means, covariances):
     '''
@@ -79,12 +120,15 @@ def classify_data(digits, means, covariances):
     pass
 
 def main():
+    print("Enter main")
     train_data, train_labels, test_data, test_labels = data.load_all_data('data')
-
     # Fit the model
     means = compute_mean_mles(train_data, train_labels)
     covariances = compute_sigma_mles(train_data, train_labels)
-
+    a = tmp(train_data, train_labels)
+    b = np_cov(train_data, train_labels)
+    plot_cov_diagonal(a)
+    
     # Evaluation
 
 if __name__ == '__main__':
