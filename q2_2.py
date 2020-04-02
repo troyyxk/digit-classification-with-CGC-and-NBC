@@ -28,19 +28,26 @@ def compute_parameters(train_data, train_labels):
     a = b = 2
     for k in range(10):
         k_digits = data.get_digits_by_label(train_data, train_labels, k)
+        # n = nh + nt
+        n = len(k_digits)
         for j in range(64):
             nh = np.sum(k_digits, axis=0)[j]
-            n = k_digits.shape[0]
-            eta[k, j] = (nh + a + 1)/(n + a + b -2)
+            eta[k, j] = (nh + a - 1)/(n + a + b -2)
     return eta
 
 def plot_images(class_images):
     '''
     Plot each of the images corresponding to each class side by side in grayscale
     '''
+    all = []
     for i in range(10):
         img_i = class_images[i]
-        # ...
+        img_i = img_i.reshape((8, 8))
+        all.append(img_i)
+
+    all_concat = np.concatenate(all, 1)
+    plt.imshow(all_concat, cmap='gray')
+    plt.show()
 
 def generate_new_data(eta):
     '''
@@ -102,7 +109,7 @@ def main():
 
     # Evaluation
     plot_images(eta)
-    print(eta)
+    # print(eta)
 
     generate_new_data(eta)
 
