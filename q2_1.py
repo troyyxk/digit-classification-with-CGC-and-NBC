@@ -85,7 +85,16 @@ def generative_likelihood(digits, means, covariances):
 
     Should return an n x 10 numpy array 
     '''
-    return None
+    num_data = int(digits.shape[0])
+    likelihoods = np.zeros((num_data, 10))
+    for i in range(num_data):
+        for j in range(10):
+            left = ((2*np.pi)**(-64/2))*((np.linalg.det(covariances[j]))**(-1/2))
+            diffs = digits[i] - means[j]
+            inner = np.linalg.inv(covariances[j]).dot(diff)
+            right = np.exp((-1/2)*diff.T.dot(inner))
+            likelihoods[i,j] = np.log(left * right)
+    return likelihoods
 
 def conditional_likelihood(digits, means, covariances):
     '''
@@ -125,9 +134,9 @@ def main():
     # Fit the model
     means = compute_mean_mles(train_data, train_labels)
     covariances = compute_sigma_mles(train_data, train_labels)
-    a = tmp(train_data, train_labels)
-    b = np_cov(train_data, train_labels)
-    plot_cov_diagonal(a)
+    # a = tmp(train_data, train_labels)
+    # b = np_cov(train_data, train_labels)
+    plot_cov_diagonal(covariances)
     
     # Evaluation
 
