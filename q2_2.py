@@ -21,8 +21,17 @@ def compute_parameters(train_data, train_labels):
 
     You should return a numpy array of shape (10, 64)
     where the ith row corresponds to the ith digit class.
+
+    slides p29
     '''
     eta = np.zeros((10, 64))
+    a = b = 2
+    for k in range(10):
+        k_digits = data.get_digits_by_label(train_data, train_labels, k)
+        for j in range(64):
+            nh = np.sum(k_digits, axis=0)[j]
+            n = k_digits.shape[0]
+            eta[k, j] = (nh + a + 1)/(n + a + b -2)
     return eta
 
 def plot_images(class_images):
@@ -93,6 +102,7 @@ def main():
 
     # Evaluation
     plot_images(eta)
+    print(eta)
 
     generate_new_data(eta)
 
