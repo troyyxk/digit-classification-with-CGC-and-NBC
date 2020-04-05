@@ -28,7 +28,6 @@ def compute_parameters(train_data, train_labels):
     a = b = 2
     for k in range(10):
         k_digits = data.get_digits_by_label(train_data, train_labels, k)
-        # n = nh + nt
         n = len(k_digits)
         for j in range(64):
             nh = np.sum(k_digits, axis=0)[j]
@@ -115,6 +114,7 @@ def conditional_likelihood(bin_digits, eta):
     cond = log_likelihoods + log_prior - log_evi
 
     return cond
+
 
 def avg_conditional_likelihood(bin_digits, labels, eta):
     '''
